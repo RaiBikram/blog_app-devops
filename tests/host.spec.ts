@@ -1,7 +1,7 @@
-import { getVersion } from "../utils";
+import { getHostName } from "../utils";
 
-describe("Version", () => {
-  it("should return the correct application version", () => {
-    expect(getVersion()).toBeTruthy();
+describe("Host name", () => {
+  it("should return the correct hostname", () => {
+    expect(getHostName()).toBeTruthy();
   });
 });

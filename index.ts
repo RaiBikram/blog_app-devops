@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { getHostName, getVersion } from "./utils/index";
+import { getHostName, getVersion } from "./utils/index.js";
+
+
 
 
 dotenv.config();

@@ -1,4 +1,6 @@
-import { getVersion } from "../utils/index";
+import { getVersion } from "../utils";
+
+
 
 describe("Version", () => {
   it("should return the correct application version", () => {
