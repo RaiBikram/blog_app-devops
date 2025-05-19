@@ -1,7 +1,7 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { getHostName, getVersion } from "./utils/index.js";
+import { getHostName, getVersion } from "./utils/index";
 dotenv.config();
 const app = express();
 app.set('view engine', 'ejs');
