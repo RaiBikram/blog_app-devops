@@ -1,0 +1,91 @@
+name: blog-db
+services:
+  # MySQL database service for the blog app
+  blog-db:
+    image: mysql:8.0 # Use official MySQL 8 image
+    deploy: # Swarm-only deployment config
+      replicas: 1 # Number of running containers (u can add more to scale)
+      update_config:
+        order: start-first # Start new container before stopping old during update
+        failure_action: rollback # Roll back if update fails
+        delay: 10s # Wait time between updates or switch
+      rollback_config:
+        parallelism: 1 # Roll back one container at a time or one by one rol back
+        order: start-first # start first and delete old for zero down time
+      restart_policy:
+        condition: on-failure # Restart only if container exits with an error
+    healthcheck:
+      # Check if the server is healthy by pinging the /health endpoint
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost"
+        ]
+      interval: 10s # check health after each 10s
+      timeout: 5s # wait 5s and then give up
+      retries: 3 # retries 3 times
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Root password for MySQL
+      MYSQL_DATABASE: blogdb
+    volumes:
+      - blog-db-vol:/var/lib/mysql # Persist MySQL data using a named volume
+    ports:
+      - "3306:3306" # Expose MySQL port for external connections (optional in production)
+    networks:
+      - blog-app-net # Connect to custom Docker network
+
+  # Main blog server (e.g., Node.js/Express app)
+  blog-server:
+    image: "bikramraidocker/blog-app:v1" # Image from Docker Hub
+    deploy: # Swarm-only deployment config
+      replicas: 1 # Number of running containers
+      update_config:
+        order: start-first # Start new container before stopping old during update
+        failure_action: rollback # Roll back if update fails
+        delay: 10s # Wait time between updates or switch
+      rollback_config:
+        parallelism: 1 # Roll back one container at a time or one by one rol back
+        order: start-first # start first and delete old for zero down time
+      restart_policy:
+        condition: on-failure # Restart only if container exits with an error
+    healthcheck:
+      # Check if the server is healthy by pinging the /health endpoint
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/health",
+        ]
+      interval: 10s # check health after each 10s
+      timeout: 5s # wait 5s and then give up
+      retries: 3 # retries 3 times
+
+      
+    ports:
+      - "3001:3000" # Outside the container (host) → port 3001, Inside the container → port 3000
+    environment:
+      - DB_HOST=blog-db # Database service name
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=blogdb
+      - NODE_HOST="{{.Node.Hostname}}" # Swarm template to get current node's hostname
+    # volumes:
+    #   - blog-db-vol:/var/lib/mysql # Named volume for app files :local
+    networks:
+      - blog-app-net
+
+# Named volumes to persist data across container restarts
+volumes:
+  blog-db-vol:
+
+
+# Custom network so services can talk to each other by name
+networks:
+  blog-app-net:

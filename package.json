@@ -1,0 +1,38 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node dist/index.js",
+    "lint": "npx eslint .",
+    "test": "jest",
+    "build": "tsc && tsc-alias && cp -R views dist",
+    "prepare": "husky"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "autocannon": "^8.0.0",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@types/express": "^5.0.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.18",
+    "eslint": "^9.27.0",
+    "globals": "^16.1.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
+  }
+}
