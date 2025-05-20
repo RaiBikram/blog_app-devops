@@ -50,25 +50,25 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-  build-and-push:
-    runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: bikramraidocker/blog-app
-      IMAGE_TAG: build-${{ github.run_number }} # bikramraidocker/     blog-app:v1, v2, v3
-    needs:
-      - lint
-      - test
-      - build
+  # build-and-push:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     IMAGE_NAME: bikramraidocker/blog-app
+  #     IMAGE_TAG: build-${{ github.run_number }} # bikramraidocker/     blog-app:v1, v2, v3
+  #   needs:
+  #     - lint
+  #     - test
+  #     - build
 
-    steps:
-      - name: Checkout the source code
-        uses: actions/checkout@v4
-      - name: Build docker image
-        run: docker build -t ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} --platform linux/amd64 .
-      - name: Login into Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Push docker image to Docker Hub
-        run: docker push ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+  #   steps:
+  #     - name: Checkout the source code
+  #       uses: actions/checkout@v4
+  #     - name: Build docker image
+  #       run: docker build -t ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} --platform linux/amd64 .
+  #     - name: Login into Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     - name: Push docker image to Docker Hub
+  #       run: docker push ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
