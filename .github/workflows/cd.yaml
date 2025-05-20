@@ -38,7 +38,7 @@ jobs:
           git config user.email githubaction@github.com
           git add .
           git commit -m "bump the image version ${{env.IMAGE_TAG}}"
-          git push
+          git push origin main
 
   deploy:
     name: Deploy the image to Docker Swarm Cluster
