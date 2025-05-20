@@ -56,4 +56,15 @@ This project uses **Continuous Integration (CI)** to ensure code quality, reliab
 
 ---
 
+## ⚡ Parallel Jobs for Faster Feedback
+
+The CI pipeline runs separate jobs for **lint**, **test**, and **build** in parallel. This means:
+
+* Faster results since jobs run simultaneously
+* Easy to spot which step failed
+* If any job fails, the whole pipeline fails, preventing faulty code from merging
+---
+
+
+
 
