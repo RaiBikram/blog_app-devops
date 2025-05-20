@@ -7,14 +7,14 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-        contents: write
+      contents: write
     env:
       IMAGE_NAME: bikramraidocker/blog-app
       IMAGE_TAG: build-${{ github.run_number }} # bikramraidocker/     blog-app:v1, v2, v3
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v4
-        with: 
+        with:
           persist-credentials: true
       - name: Build docker image
         run: docker build -t ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} --platform linux/amd64 .
@@ -26,9 +26,9 @@ jobs:
       - name: Push docker image to Docker Hub
         run: docker push ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
       - name: Update Image Version in the related HelmChart values.yaml
-        uses: fjogeleit/yaml-update-action@main@v0.16.1
+        uses: fjogeleit/yaml-update-action@v0.16.1
         with:
-          valueFile: comopse.yaml
+          valueFile: compose.yaml
           propertyPath: 'services["blog-server"].image'
           value: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
           commitChange: false
@@ -38,11 +38,11 @@ jobs:
           git config user.email githubaction@github.com
           git add .
           git commit -m "bump the image version ${{env.IMAGE_TAG}}"
-          git push 
+          git push
 
   deploy:
     name: Deploy the image to Docker Swarm Cluster
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
 
     env:
       IMAGE_NAME: bikramraidocker/blog-app
@@ -61,7 +61,7 @@ jobs:
           script: |
             # Exit immediately if a command exits with a non-zero status
             set -e
-            # Navigate to the project directory on the server
+            # Navigate to the project directory on the server (manager root/)
             cd ~/bloggy
             # Update the project files from the latest main branch
             git fetch origin main
