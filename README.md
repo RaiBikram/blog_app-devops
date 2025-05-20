@@ -1,4 +1,4 @@
- ## CI/CD
+ ## GitHub Action (CI/CD)
 ---
 ## ⚙️ Continuous Integration (CI)
 
