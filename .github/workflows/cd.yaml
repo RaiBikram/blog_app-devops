@@ -62,11 +62,15 @@ jobs:
             # Exit immediately if a command exits with a non-zero status
             set -e
             # Navigate to the project directory on the server (manager root/)
-            cd ~/bloggy
+            # cd ~/bloggy
+            cd /root/bloggy
+
             # Update the project files from the latest main branch
             git fetch origin main
             git checkout origin/main
+
             # Pull the latest Docker image from Docker Hub
             docker pull ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            
             # Deploy the updated stack using Docker Compose
             docker stack deploy -c compose.yaml bloggy
