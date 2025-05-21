@@ -10,7 +10,7 @@ jobs:
       contents: write
     env:
       IMAGE_NAME: bikramraidocker/blog-app
-      IMAGE_TAG: build-${{ github.run_number }} # bikramraidocker/     blog-app:v1, v2, v3
+      IMAGE_TAG: build-${{ github.sha }} # bikramraidocker/     blog-app:hash (commit hash)
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
 
     env:
       IMAGE_NAME: bikramraidocker/blog-app
-      IMAGE_TAG: build-${{github.run_number}}
+      IMAGE_TAG: build-${{github.sha}}
     needs:
       - build-and-push
 
