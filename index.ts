@@ -3,9 +3,6 @@ import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import { getHostName, getVersion } from "./utils/index.js";
 
-
-
-
 dotenv.config();
 
 const app = express();
@@ -18,7 +15,13 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
 });
 
-app.get('/', async (req, res) => {
+// Root path: simple welcome message
+app.get('/', (req, res) => {
+    res.send('Welcome to Blog');
+});
+
+// /blogs path: fetch and render blog data
+app.get('/blogs', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT title, description FROM blogs');
         res.render('index', {
