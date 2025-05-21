@@ -8,7 +8,8 @@
     "lint": "npx eslint .",
     "test": "jest",
     "build": "tsc && tsc-alias && cp -R views dist",
-    "prepare": "husky"
+    "prepare": "husky",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
