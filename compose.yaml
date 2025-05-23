@@ -24,20 +24,16 @@ services:
       retries: 3
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_password
-      # MYSQL_DATABASE: blogdb
     volumes:
       - blog-db-vol:/var/lib/mysql
     ports:
       - '3306:3306'
     networks:
       - blog-app-net
-    
     secrets:
       - db_password
-
-
   blog-server:
-    image: bikramraidocker/blog-app:build-e5dac542a695b633737564c21f620447d808875b
+    image: bikramraidocker/blog-app:build-40995e80df5bbb70377308ecdff7c58fedfc4ed0
     deploy:
       replicas: 1
       update_config:
@@ -77,9 +73,7 @@ volumes:
   blog-db-vol: null
 networks:
   blog-app-net: null
-
-
-secrets: 
+secrets:
   db_password:
     external: true
   db_username:
