@@ -1,29 +1,44 @@
-# Step 1: Use an official Node.js image as a base image
-FROM node:16
-# Set the working directory inside the container to /app
+FROM node:22-slim AS builder
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if present) to the container
+
 COPY package*.json ./
+# ignore husky 
+RUN npm ci --ignore-scripts 
 
-# Install all dependencies inside the container using npm
-RUN npm install
-
-# Copy the rest of the application code into the container
 COPY . .
 
-# Copy wait-for-it.sh file 
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
-# Give execution permission 
-RUN chmod +x /usr/local/bin/wait-for-it.sh
+RUN npm run build
+ # remove dev dependencies
+RUN npm prune --omit-dev
 
-# Expose port 3000 on the container so that it can be accessed from outside
-EXPOSE 3000
+
+
+FROM node:22-slim AS runner 
+
+WORKDIR /app
+
+#install wget and remove jargon 
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+
+
+COPY --from=builder /app/dist ./
+
+COPY --from=builder /app/node_modules ./node_modules
+
+COPY --from=builder /app/wait-for-it.sh /usr/local/bin/wait-for-it.sh 
+
+
+RUN chmod +x /usr/local/bin/wait-for-it.sh 
+
+EXPOSE 3001
+
+RUN useradd -m appuser
+
+USER appuser
+
 
 ENTRYPOINT ["wait-for-it.sh", "blog-db:3306", "--"]
-
-# Define the command to run the app (start the server with node index.js)
-# ...
-CMD ["npm", "start"]
-
+CMD ["node", "index.js"]
