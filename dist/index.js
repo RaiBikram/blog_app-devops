@@ -24,10 +24,29 @@ const pool = mysql.createPool({
 app.get("/", (req, res) => {
     res.send("Welcome to Blog");
 });
-// /blogs path: fetch and render blog data
+// // /blogs path: fetch and render blog data
+// app.get("/blogs", async (req, res) => {
+//   try {
+//     const [rows] = await pool.query("SELECT title, description FROM blogs");
+//     res.render("index", {
+//       blogs: rows,
+//       version: getVersion(),
+//       host: process.env.NODE_HOST || getHostName(),
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Error retrieving blog posts");
+//   }
+// });
 app.get("/blogs", async (req, res) => {
     try {
+        console.log("Connecting to DB with:", {
+            host: process.env.DB_HOST,
+            user: dbUser,
+            database: process.env.DB_NAME,
+        });
         const [rows] = await pool.query("SELECT title, description FROM blogs");
+        console.log("DB query returned rows:", rows);
         res.render("index", {
             blogs: rows,
             version: getVersion(),
@@ -35,8 +54,8 @@ app.get("/blogs", async (req, res) => {
         });
     }
     catch (error) {
-        console.error(error);
-        res.status(500).send("Error retrieving blog posts");
+        console.error("Error in /blogs:", error); // Log the full error here
+        res.status(500).send(`Error retrieving blog posts: ${error.message}`);
     }
 });
 app.get("/health", (req, res) => {
