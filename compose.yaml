@@ -59,7 +59,7 @@ services:
     ports:
       - '3001:3000'
     environment:
-      - DB_HOST=bloggy_blog-db
+      - DB_HOST=blog-db
       - DB_USER_FILE=/run/secrets/db_username
       - DB_PASSWORD_FILE=/run/secrets/db_password
       - DB_NAME=blogdb

@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
   res.send("Welcome to Blog");
 });
 
-// /blogs path: fetch and render blog data
+// blogs path: fetch and render blog data
 app.get("/blogs", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT title, description FROM blogs");
