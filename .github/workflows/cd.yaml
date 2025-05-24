@@ -15,7 +15,33 @@ jobs:
       - name: Checkout the source code
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: false # gitaction app secret
+      - name: Update Image Version in the related HelmChart values.yaml || update docker compose
+        uses: fjogeleit/yaml-update-action@v0.16.1
+        with:
+          valueFile: compose.yaml
+          propertyPath: 'services["blog-server"].image'
+          value: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+          commitChange: false
+
+      - name: Generate Token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID}}
+          private_key: ${{ secrets.APP_SECRET_KEY }}
+      - name: Commit files
+        run: |
+          git config --local user.name github-actions
+          git config --local user.email githubaction@github.com
+          git add .
+          git commit -m "bump the image version ${{env.IMAGE_TAG}} [skip ci]" # avoid infinite loop
+          # git push origin main
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ steps.generate_token.outputs.token }}
+
       - name: Build docker image
         run: docker build -t ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} --platform linux/amd64 .
       - name: Login into Docker Hub
@@ -25,20 +51,20 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Push docker image to Docker Hub
         run: docker push ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
-      - name: Update Image Version in the related HelmChart values.yaml
-        uses: fjogeleit/yaml-update-action@v0.16.1
-        with:
-          valueFile: compose.yaml
-          propertyPath: 'services["blog-server"].image'
-          value: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
-          commitChange: false
-      - name: Commit the changes
-        run: |
-          git config user.name github-actions
-          git config user.email githubaction@github.com
-          git add .
-          git commit -m "bump the image version ${{env.IMAGE_TAG}}"
-          git push origin main
+      # - name: Update Image Version in the related HelmChart values.yaml || update docker compos
+      #   uses: fjogeleit/yaml-update-action@v0.16.1
+      #   with:
+      #     valueFile: compose.yaml
+      #     propertyPath: 'services["blog-server"].image'
+      #     value: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+      #     commitChange: false
+      # - name: Commit the changes
+      #   run: |
+      #     git config user.name github-actions
+      #     git config user.email githubaction@github.com
+      #     git add .
+      #     git commit -m "bump the image version ${{env.IMAGE_TAG}}"
+      #     git push origin main
 
   deploy:
     name: Deploy the image to Docker Swarm Cluster
