@@ -33,7 +33,7 @@ services:
     secrets:
       - db_password
   blog-server:
-    image: bikramraidocker/blog-app:build-2ba85ef6c0fca5845c8badbf856beeed27ad1f9c
+    image: bikramraidocker/blog-app:build-83724dc7231c4c1e62313b155319b0d6b9bdbe0c
     deploy:
       replicas: 1
       update_config:
