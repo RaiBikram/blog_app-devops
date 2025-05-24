@@ -39,6 +39,25 @@ app.get("/blogs", async (req, res) => {
         res.status(500).send("Error retrieving blog posts");
     }
 });
+// app.get("/blogs", async (req, res) => {
+//   try {
+//     console.log("Connecting to DB with:", {
+//       host: process.env.DB_HOST,
+//       user: dbUser,
+//       database: process.env.DB_NAME,
+//     });
+//     const [rows] = await pool.query("SELECT title, description FROM blogs");
+//     console.log("DB query returned rows:", rows);
+//     res.render("index", {
+//       blogs: rows,
+//       version: getVersion(),
+//       host: process.env.NODE_HOST || getHostName(),
+//     });
+//   } catch (error:any) {
+//     console.error("Error in /blogs:", error);  // Log the full error here
+//     res.status(500).send(`Error retrieving blog posts: ${error.message}`);
+//   }
+// });
 app.get("/health", (req, res) => {
     console.log("Checking health through endpoint...");
     res.json({ alive: true });
