@@ -17,7 +17,7 @@ services:
         - CMD
         - mysqladmin
         - ping
-        - "-h"
+        - '-h'
         - localhost
       interval: 10s
       timeout: 5s
@@ -27,13 +27,13 @@ services:
     volumes:
       - blog-db-vol:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - '3306:3306'
     networks:
       - blog-app-net
     secrets:
       - db_password
   blog-server:
-    image: bikramraidocker/blog-app:build-83724dc7231c4c1e62313b155319b0d6b9bdbe0c
+    image: bikramraidocker/blog-app:build-2a709c026ddb435e29b431ae7b5270187f4e87fb
     deploy:
       replicas: 2
       update_config:
@@ -49,15 +49,15 @@ services:
       test:
         - CMD
         - wget
-        - "--no-verbose"
-        - "--tries=1"
-        - "--spider"
+        - '--no-verbose'
+        - '--tries=1'
+        - '--spider'
         - http://localhost:3000/health
       interval: 10s
       timeout: 5s
       retries: 3
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - DB_HOST=blog-db
       - DB_USER_FILE=/run/secrets/db_username
@@ -69,9 +69,8 @@ services:
     secrets:
       - db_username
       - db_password
-
   caddy:
-    image: "caddy:2-alpine"
+    image: caddy:2-alpine
     deploy:
       replicas: 1
       update_config:
@@ -83,10 +82,9 @@ services:
         order: start-first
       restart_policy:
         condition: on-failure
-
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -99,7 +97,6 @@ volumes:
   blog-db-vol: null
   caddy_data: null
   caddy_config: null
-  
 networks:
   blog-app-net: null
 secrets:
