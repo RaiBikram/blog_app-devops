@@ -1,0 +1,7 @@
+{
+    email bikramraidev@gmil.com
+}
+
+bikramrai.site{
+    reverse_proxy blog-server:3000
+}
