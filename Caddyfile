@@ -18,3 +18,11 @@
 # http://52.207.215.46 {
 #     reverse_proxy blog-server:3000
 # }
+
+{
+    email me@codersgyan.com
+}
+
+bikramrai.site {
+    reverse_proxy blog-server:3000
+}
