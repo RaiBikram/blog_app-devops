@@ -32,7 +32,7 @@ services:
     networks:
       - blog-app-net
   blog-server:
-    image: bikramraidocker/blog-app:build-ab471aa1013fa6de6553046dbaadabe8569f8947
+    image: bikramraidocker/blog-app:build-e93dd6c55e16871fbd9ed329875dc4bcd04cd3e0
     deploy:
       replicas: 1
       update_config:
