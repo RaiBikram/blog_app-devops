@@ -1,20 +1,28 @@
+# {
+#     email bikramraidev@gmail.com
+# }
+
+# # Serve via domain name (Cloudflare DNS must point to this server)
+# bikramrai.site {
+#     reverse_proxy blog-server:3000
+
+#     header {
+#         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+#         X-Content-Type-Options "nosniff"
+#         X-Frame-Options "DENY"
+#         Referrer-Policy "strict-origin-when-cross-origin"
+#     }
+# }
+
+# # Serve via direct IP (if needed – won't support HTTPS)
+# http://52.207.215.46 {
+#     reverse_proxy blog-server:3000
+# }
+
 {
-    email bikramraidev@gmail.com
+    email me@codersgyan.com
 }
 
-# Serve via domain name (Cloudflare DNS must point to this server)
 bikramrai.site {
-    reverse_proxy blog-server:3000
-
-    header {
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "DENY"
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
-}
-
-# Serve via direct IP (if needed – won't support HTTPS)
-http://52.207.215.46 {
     reverse_proxy blog-server:3000
 }
