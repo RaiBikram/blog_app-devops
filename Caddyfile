@@ -23,6 +23,6 @@
     email bikramraidev@gmail.com
 }
 
-bikramrai.site {
+bikramrai.site, www.bikramrai.site {
     reverse_proxy blog-server:3000
 }
