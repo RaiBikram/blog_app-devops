@@ -5,7 +5,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.lables.dbwala == true
+          - node.labels.dbwala == true
       update_config:
         order: start-first
         failure_action: rollback
@@ -36,7 +36,7 @@ services:
     secrets:
       - db_password
   blog-server:
-    image: bikramraidocker/blog-app:build-de387cdfdc13dbe1b9f2d3b509be545b4bfa769d
+    image: bikramraidocker/blog-app:build-bf8956ca8856e4480dcd84ce40e43897528dbfa6
     deploy:
       replicas: 2
       update_config:
@@ -96,6 +96,7 @@ services:
     configs:
       - source: Caddyfile
         target: /etc/caddy/Caddyfile
+  # for backup using cron
   db-backup:
     image: fradelg/mysql-cron-backup:latest
     environment:
@@ -104,16 +105,21 @@ services:
       - MYSQL_PASS_FILE=/run/secrets/db_password
       - MAX_BACKUPS=5
       - INIT_BACKUP=1
+      # Every day at 03:00
       - CRON_TIME=* * * * *
+      # Make it small
       - GZIP_LEVEL=9
-      - EXIT_BACKUP=1
+      # - INIT_RESTORE_LATEST=1 # while container restart restore auto
+      - EXIT_BACKUP=1 # after container run stop
+      # As of MySQL 8.0.21 this is needed
+      # - MYSQLDUMP_OPTS=--no-tablespaces
     volumes:
       - mysql_backup:/backup/
     deploy:
       replicas: 1
       placement:
         constraints:
-          - node.lables.dbwala == true
+          - node.labels.dbwala == true
       update_config:
         order: start-first
         failure_action: rollback
@@ -128,7 +134,7 @@ services:
         - CMD
         - mysqladmin
         - ping
-        - '-h'
+        - "-h"
         - localhost
       interval: 10s
       timeout: 5s
