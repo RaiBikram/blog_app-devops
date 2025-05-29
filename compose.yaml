@@ -1,6 +1,6 @@
 services:
   blog-db:
-    image: mysql:8.0
+    image: mysql
     deploy:
       replicas: 1
       placement:
@@ -104,11 +104,11 @@ services:
       - MYSQL_PASS_FILE=/run/secrets/db_password
       - MAX_BACKUPS=5
       - INIT_BACKUP=1
-      - CRON_TIME=* * * * *
+      - CRON_TIME=0 3 * * *
       - GZIP_LEVEL=9
       - EXIT_BACKUP=1
     volumes:
-      - mysql_backup:/backup/
+      - mysql_backup:/backup
     deploy:
       replicas: 1
       placement:
@@ -123,16 +123,7 @@ services:
         order: start-first
       restart_policy:
         condition: on-failure
-    healthcheck:
-      test:
-        - CMD
-        - mysqladmin
-        - ping
-        - '-h'
-        - localhost
-      interval: 10s
-      timeout: 5s
-      retries: 3
+
     networks:
       - blog-app-net
     secrets:
