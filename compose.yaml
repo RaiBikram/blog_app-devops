@@ -20,7 +20,7 @@ services:
         - CMD
         - mysqladmin
         - ping
-        - "-h"
+        - '-h'
         - localhost
       interval: 10s
       timeout: 5s
@@ -30,13 +30,13 @@ services:
     volumes:
       - blog-db-vol:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - '3306:3306'
     networks:
       - blog-app-net
     secrets:
       - db_password
   blog-server:
-    image: bikramraidocker/blog-app:build-bf8956ca8856e4480dcd84ce40e43897528dbfa6
+    image: bikramraidocker/blog-app:build-c00fbcd43633ed2a606cd8fc7407aaac464b6442
     deploy:
       replicas: 2
       update_config:
@@ -52,15 +52,15 @@ services:
       test:
         - CMD
         - wget
-        - "--no-verbose"
-        - "--tries=1"
-        - "--spider"
+        - '--no-verbose'
+        - '--tries=1'
+        - '--spider'
         - http://localhost:3000/health
       interval: 10s
       timeout: 5s
       retries: 3
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - DB_HOST=blog-db
       - DB_USER_FILE=/run/secrets/db_username
@@ -86,8 +86,8 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -96,7 +96,6 @@ services:
     configs:
       - source: Caddyfile
         target: /etc/caddy/Caddyfile
-  # for backup using cron
   db-backup:
     image: fradelg/mysql-cron-backup:latest
     environment:
@@ -105,14 +104,9 @@ services:
       - MYSQL_PASS_FILE=/run/secrets/db_password
       - MAX_BACKUPS=5
       - INIT_BACKUP=1
-      # Every day at 03:00
       - CRON_TIME=0 3 * * *
-      # Make it small
       - GZIP_LEVEL=9
-      # - INIT_RESTORE_LATEST=1 # while container restart restore auto
-      - EXIT_BACKUP=1 # after container run stop
-      # As of MySQL 8.0.21 this is needed
-      # - MYSQLDUMP_OPTS=--no-tablespaces
+      - EXIT_BACKUP=1
     volumes:
       - mysql_backup:/backup
     deploy:
