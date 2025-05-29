@@ -96,6 +96,54 @@ services:
     configs:
       - source: Caddyfile
         target: /etc/caddy/Caddyfile
+  # for backup using cron
+  db-backup:
+    image: fradelg/mysql-cron-backup:latest
+    environment:
+      - MYSQL_HOST=blog-db
+      - MYSQL_USER_FILE=/run/secrets/db_username
+      - MYSQL_PASS_FILE=/run/secrets/db_password
+      - MAX_BACKUPS=5
+      - INIT_BACKUP=1
+      # Every day at 03:00
+      - CRON_TIME=* * * * *
+      # Make it small
+      - GZIP_LEVEL=9
+      # - INIT_RESTORE_LATEST=1 # while container restart restore auto
+      - EXIT_BACKUP=1 # after container run stop
+      # As of MySQL 8.0.21 this is needed
+      # - MYSQLDUMP_OPTS=--no-tablespaces
+    volumes:
+      - mysql_backup:/backup/
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.lables.dbwala == true
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 1
+        order: start-first
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - "-h"
+        - localhost
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - blog-app-net
+    secrets:
+      - db_username
+      - db_password
 volumes:
   blog-db-vol: null
   caddy_data: null
