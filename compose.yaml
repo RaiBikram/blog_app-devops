@@ -36,7 +36,7 @@ services:
     secrets:
       - db_password
   blog-server:
-    image: bikramraidocker/blog-app:build-c00fbcd43633ed2a606cd8fc7407aaac464b6442
+    image: bikramraidocker/blog-app:build-1661f3f1e82b159c83ec7ebf53ac5e4a8bdab1eb
     deploy:
       replicas: 2
       update_config:
@@ -123,7 +123,6 @@ services:
         order: start-first
       restart_policy:
         condition: on-failure
-
     networks:
       - blog-app-net
     secrets:
